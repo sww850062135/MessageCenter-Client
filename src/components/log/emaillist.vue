@@ -13,7 +13,16 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.subject" placeholder="邮件主题" @keyup.enter.native="handleSearch" style="padding-top: 20px"></el-input>
+            <el-select v-model="selectType" placeholder="请选择" style="padding-top: 20px">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="filters.temp" placeholder="邮件主题/收件人" @keyup.enter.native="handleSearch" style="padding-top: 20px"></el-input>
           </el-form-item>
           <el-form-item style="padding-top: 20px">
             <el-button type="primary" @click="handleSearch">查询</el-button>
@@ -45,62 +54,95 @@
 
 <script>
 
-  import {getEmailList} from "../../api/api_push"
+  import {getEmailList, getEmailListByEmail_to} from "../../api/api_push"
   import {getEmailListBySubject} from "../../api/api_push"
   export default {
     data(){
       return {
         filters:{
-          email_to: '',
-          subject: '',
-          sendtime: '',
+          temp: '',
         },
         emails: [],
         total: 0,
-        page: 1,
-        limit: 10,
-        sels: []  //列表选中的列
+        pageNum: 1,         //当前页（默认第一页）
+        pageSize: 10,       //每页显示条数(默认10条)
+        sels: [],           //列表选中的列
+        selectType: '',
+        options: [{
+          value: '请选择'
+        },{
+          value: '收件方'
+        },{
+          value: '邮件主题'
+        }],
       }
     },
     methods:{
       handleCurrentChange(val) {
-        this.page = val;
+        this.pageNum = val;
         this.search();
       },
       handleSearch(){
         this.total = 0;
-        this.page = 1;
+        this.pageNum = 1;
         this.search();
       },
       //获取邮件列表
       search: function () {
         let that = this;
+        let selectType = that.selectType;
         let params = {
-          subject: that.filters.subject
+          pageNum: that.pageNum,
+          pageSize: 10,
         };
-        //console.log(params);
-        if(params.subject===""){
+        let params1 = {
+          subject: that.filters.temp
+        };
+        let params2 = {
+          email_to: that.filters.temp
+        };
+        if((selectType==="请选择" || selectType==="") && that.filters.temp===""){
           getEmailList(params).then(data => {
             let {status, msg, result} = data;
-            //console.log(data);
+            console.log(data);
             if (status === "success") {
               that.total = result.total;
               that.emails = result;
             } else {
-              that.$message({message: msg, type: 'error'});
+              that.$message({message: msg, type: 'warning', center: true});
             }
-          })
-        }else {
-          getEmailListBySubject(params).then(data => {
+          });
+        }
+        if (selectType==="邮件主题" && that.filters.temp!==""){
+          getEmailListBySubject(params1).then(data => {
             let {status, msg, result} = data;
-            //console.log(data);
+            console.log(data);
             if (status === "success") {
               that.total = result.total;
               that.emails = result;
             } else {
-              that.$message({message: msg, type: 'error'});
+              that.$message({message: msg, type: 'warning', center: true});
             }
-          })
+          });
+        }
+        if(selectType==="收件方" && that.filters.temp!==""){
+          getEmailListByEmail_to(params2).then(data => {
+            let {status, msg, result} = data;
+            console.log(data);
+            if (status === "success") {
+              that.total = result.total;
+              that.emails = result;
+            } else {
+              that.$message({message: msg, type: 'warning', center: true});
+            }
+          });
+        }
+        if ((selectType==="收件方" || selectType==="邮件主题") && that.filters.temp===""){
+          that.$alert('请输入查询参数', '提示',{
+            type: 'warning',
+            center: true,
+            dangerouslyUseHTMLString: true
+          });
         }
 
       },

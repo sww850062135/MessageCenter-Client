@@ -62,25 +62,21 @@
       <el-table-column prop="sms_status" label="发送状态" width="300" sortable></el-table-column>
       <el-table-column prop="sms_content" label="发送内容" sortable></el-table-column>
     </el-table>
+    <!--分页-->
+    <el-col :span="24" class="toolbar">
+      <el-button type="danger" @click="batchDeleteEmail" :disabled="this.sels.length===0">批量删除</el-button>
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+                     style="float:right;">
+      </el-pagination>
+    </el-col>
   </el-row>
 </template>
 
 
 <script>
-  import ElCol from "element-ui/packages/col/src/col";
-  import ElForm from "../../../node_modules/element-ui/packages/form/src/form.vue";
-  import ElFormItem from "../../../node_modules/element-ui/packages/form/src/form-item.vue";
-  import ElInput from "../../../node_modules/element-ui/packages/input/src/input.vue";
-  import ElButton from "../../../node_modules/element-ui/packages/button/src/button.vue";
   import {getSmsList, getSmsListByMobile} from "../../api/api_push";
 
   export default {
-    components: {
-      ElButton,
-      ElInput,
-      ElFormItem,
-      ElForm,
-      ElCol},
     data(){
       return{
         filters:{
@@ -88,21 +84,27 @@
         },
         smsList:[],
         total: 0,
-        page: 1,
-        limit: 10,
+        pageNum: 1,
+        pageSize: 10,
         sels: [],  //列表选中的列
       }
     },
     methods:{
+      handleCurrentChange(val) {
+        this.pageNum = val;
+        this.search();
+      },
       handleSearch(){
         this.total = 0;
-        this.page = 1;
+        this.pageNum = 1;
         this.search();
       },
       //获取sms列表
       search: function () {
         let that = this;
         let params = {
+          pageNum: that.pageNum,
+          pageSize: 10,
           mobile: that.filters.mobile
         };
         console.log(params);
@@ -127,7 +129,7 @@
               that.total = result.total;
               that.smsList = result;
             } else {
-              that.$message({message: msg, type: 'error'});
+              that.$message({message: msg, type: 'warning', center: true});
             }
           })
         }

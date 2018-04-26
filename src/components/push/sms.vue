@@ -14,7 +14,8 @@
             <el-option
               v-for="item in options1"
               :key="item.value"
-              :value="item.value"></el-option>
+              :value="item.value">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="mobile" label="手机号码">
@@ -110,14 +111,14 @@
         let that = this;
         this.$refs.form.validate((valid) =>{
           if (valid){
-            let sendType = this.select1;
+            let sendType = that.select1;
             console.log(this.select2);
             console.log(sendType);
             let args = {
-              mobile: this.form.mobile,
-              templateid: this.select2,
-              temp: this.form.temp,
-              uid: this.form.uid
+              mobile: that.form.mobile,
+              templateid: that.select2,
+              temp: that.form.temp,
+              uid: that.form.uid
             };
             console.log(args);
             if (sendType==="指定模版单发"){

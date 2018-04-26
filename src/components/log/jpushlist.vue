@@ -80,25 +80,27 @@
         },
         jPushList:[],
         total: 0,
-        page: 1,
-        limit: 10,
+        pageNum: 1,     //
+        pageSize: 10,   //
         sels: [],  //列表选中的列
       }
     },
     methods:{
       handleCurrentChange(val) {
-        this.page = val;
+        this.pageNum = val;
         this.search();
       },
       handleSearch(){
         this.total = 0;
-        this.page = 1;
+        this.pageNum = 1;
         this.search();
       },
       //获取jpush列表
       search: function () {
         let that = this;
         let params = {
+          pageNum: that.pageNum,
+          pageSize: 10,
           notification: that.filters.notification
         };
         console.log(params);
@@ -123,7 +125,7 @@
               that.total = result.total;
               that.jPushList = result;
             } else {
-              that.$message({message: msg, type: 'error'});
+              that.$message({message: msg, type: 'warning', center: true});
             }
           })
         }
