@@ -114,7 +114,7 @@
             console.log(data);
             that.loading = false;
             if (status === "success") {
-              that.total = result.length;
+              that.total = result.total;
               that.smsList = result;
             } else {
               that.$message({message: result});

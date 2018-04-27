@@ -91,7 +91,7 @@
               let {code, message} = data;
               if (code === 200){
                 //that.$message.success(message);
-                that.$notify({message: message, type: 'success'});
+                that.$notify({message: message, type: 'success', offset: 100});
                 console.log(data);
                 //that.$router.push({path:'/log/jpushlist'})
               }else {

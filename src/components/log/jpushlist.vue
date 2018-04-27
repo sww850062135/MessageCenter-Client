@@ -80,8 +80,8 @@
         },
         jPushList:[],
         total: 0,
-        pageNum: 1,     //
-        pageSize: 10,   //
+        pageNum: 1,
+        pageSize: 10,
         sels: [],  //列表选中的列
       }
     },
@@ -110,7 +110,7 @@
             console.log(data);
             that.loading = false;
             if (status === "success") {
-              that.total = result.length;
+              that.total = result.total;
               that.jPushList = result;
             } else {
               that.$message({message: result});
