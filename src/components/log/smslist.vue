@@ -57,9 +57,9 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column prop="sendtime" label="发送时间" width="200" sortable></el-table-column>
-      <el-table-column prop="mobile" label="接收号码" width="200" sortable></el-table-column>
-      <el-table-column prop="sms_status" label="发送状态" width="300" sortable></el-table-column>
+      <el-table-column prop="sendtime" label="发送时间" width="190" sortable></el-table-column>
+      <el-table-column prop="mobile" label="接收号码" width="190" sortable></el-table-column>
+      <el-table-column prop="sms_status" label="发送状态" width="190" sortable></el-table-column>
       <el-table-column prop="sms_content" label="发送内容" sortable></el-table-column>
     </el-table>
     <!--分页-->
